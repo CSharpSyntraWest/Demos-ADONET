@@ -1,0 +1,9 @@
+Installeer de volgende 3 NuGet Packages voor solution - via NuGet Package Manager Console of via UI NuGet Package Manager
+
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Tools
+Microsoft.EntityFrameworkCore.Design
+
+--Voer het volgende commando uit in NuGet Package Manager Console:
+
+Scaffold-DbContext "Data Source=.;Initial Catalog=BierenDb;Integrated Security=True;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
