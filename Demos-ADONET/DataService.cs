@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Text;
+//Oefening ADO.NET Sql Connectie - Vul de code aan: 
+//1. Maak een methode die alle Brouwers
+//   teruggeeft uit de Bierendatabase roep deze aan vanuit Program.cs en schrijf de brouwergegevens naar de console
+//2. Maak een methode die aan de hand van de BrouwerID de gegevens van deze brouwer teruggeeft (zonder stored procedure)
+//3. Maak een methode die een stored procedure aanroept die de omzet van de brouwers uit Brussel halveert
+//4. Maak een methode die het aantal bieren van een bepaalde soort teruggeeft (soortnaam meegeven als input parameter aan stored procedure)
 
 namespace Demos_ADONET
 {
     public class BierenDataService
-    {
-        private SqlConnection _sqlConnectie;
+    {     
         private readonly string _connectionString;
-
         public BierenDataService()
         {
            // _connectionString = "Data Source=.;Initial Catalog=BierenDb;Integrated Security=True";

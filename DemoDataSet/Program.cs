@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Data;
-
+//Oefening ADO.NET DataSet - Vul de dataset autosDataSet aan: 
+//1. Maak kolommen aan in de DataTable "Auto" (maak kolom AutoID een autoincrementele kolom)
+//2. Zet de kolom AutoID als PK kolom in deze tabel
+//3. Voeg enkele rijen toe aan de tabel "Auto"
+//4. Voeg een rij toe aan de tabel "Bestelling"
+//5. Leg een relatie tussen de tabel Auto en tabel Bestelling (kolommen AutoID)
 namespace DemoDataSet
 {
     class Program
