@@ -108,11 +108,7 @@ namespace DemoDataSet
             autosDataSet.Tables.Add(klantenTable);
             autosDataSet.Tables.Add(autosTable);
 
-          //  autosDataSet.WriteXml("autos.xml");
-            autosDataSet.WriteXml("autos.xml", XmlWriteMode.WriteSchema);
 
-          //  autosDataSet.ReadXml("autos.xml");
-            //autosDataSet.ReadXml("autos.xml", XmlReadMode.ReadSchema);
             DataRelation dr1 = new DataRelation("KlantenBestelling",
                 // parent 
              autosDataSet.Tables["Klant"].Columns["KlantID"],
@@ -136,6 +132,9 @@ namespace DemoDataSet
                 foreach (DataRow r in drsBestellingen)
                     Console.WriteLine("Bestelling Id: " + r["BestID"]);
 
+            autosDataSet.WriteXml("autos.xml", XmlWriteMode.WriteSchema);
+
+            Console.ReadKey();
         }
 
 
