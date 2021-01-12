@@ -89,6 +89,41 @@ namespace DemoDataSet
             //Voorbeeld dataset autos
 
             DataTable autosTable = new DataTable("Auto");
+            //Oefening ADO.NET DataSet - Vul de dataset autosDataSet aan: 
+            //1. Maak kolommen aan in de DataTable "Auto" (maak kolom AutoD een autoincrementele kolom)
+            autosTable.Columns.Add(new DataColumn() { ColumnName = "AutoID", DataType = typeof(Int32), AutoIncrement = true });
+            autosTable.Columns.Add(new DataColumn() { ColumnName = "Merk", DataType = typeof(String)});
+            autosTable.Columns.Add(new DataColumn() { ColumnName = "Kleur", DataType = typeof(String) });
+            autosTable.Columns.Add(new DataColumn() { ColumnName = "Model", DataType = typeof(String) });
+            //2. Zet de kolom AutoID als PK kolom in deze tabel
+            DataColumn[] PKAuto = new DataColumn[1];
+            PKAuto[0] = autosTable.Columns["AutoID"];
+            autosTable.PrimaryKey = PKAuto;
+            //3. Voeg enkele rijen toe aan de tabel "Auto"
+            DataRow drow1= autosTable.NewRow();
+            drow1 = autosTable.NewRow();
+            drow1["Merk"] = "Opel";
+            drow1["Kleur"] = "Zwart";
+            drow1["Model"] = "Astra";
+            autosTable.Rows.Add(drow1);
+            DataRow drow2 = autosTable.NewRow(); // !
+            drow2["Merk"] = "Toyota";
+            drow2["Kleur"] = "Blauw";
+            drow2["Model"] = "Corolla";
+            autosTable.Rows.Add(drow2);
+            DataTableReader dReader = autosTable.CreateDataReader();
+            while (dReader.Read())
+            {
+                for (int i = 0; i < dReader.FieldCount; i++) //FieldCount geeft het aantal kolommen terug
+                {  // ………   
+                    Console.Write(dReader[i] + " ");
+                }
+                Console.WriteLine();
+            }
+            dReader.Close();
+            //4. Voeg een rij toe aan de tabel "Bestelling"
+
+            //5. Leg een relatie tussen de tabel Auto en tabel Bestelling (kolommen AutoID)
             DataTable klantenTable = wnTable; //new DataTable("Klant"); (zie code hierboven)
             DataTable bestellingenTable = new DataTable("Bestelling");
             bestellingenTable.Columns.Add(new DataColumn() { ColumnName = "BestID", DataType= typeof(Int32) ,AutoIncrement = true });
@@ -99,7 +134,11 @@ namespace DemoDataSet
             DataColumn[] PKBestelling = new DataColumn[1];
             PKBestelling[0] = bestellingenTable.Columns["BestID"];
             bestellingenTable.PrimaryKey = PKBestelling;
-
+            DataRow bestelRow = bestellingenTable.NewRow();
+            bestelRow["KlantID"] = 110;
+            bestelRow["AutoID"] = 1;
+            bestelRow["BestelDatum"] = DateTime.Today;
+            bestellingenTable.Rows.Add(bestelRow);
             //  Data Set
             DataSet autosDataSet =
                            new DataSet("AutosDataSet");
@@ -107,17 +146,18 @@ namespace DemoDataSet
             autosDataSet.Tables.Add(bestellingenTable);
             autosDataSet.Tables.Add(klantenTable);
             autosDataSet.Tables.Add(autosTable);
-
+            
 
             DataRelation dr1 = new DataRelation("KlantenBestelling",
                 // parent 
              autosDataSet.Tables["Klant"].Columns["KlantID"],
              // child	 
-            autosDataSet.Tables["Bestelling"]. Columns["BestID"]);
-            autosDataSet.Relations.Add(dr1); // Exception
-            //DataRelation dr2 = new DataRelation("AutosBestelling", autosDataSet.Tables["Auto"].Columns["AutoID"],
-            //   autosDataSet.Tables["Bestelling"].Columns["AutoID"]);
-            //autosDataSet.Relations.Add(dr2);
+            autosDataSet.Tables["Bestelling"]. Columns["KlantID"]);
+           // autosDataSet.Relations.Add(dr1); // Exception
+
+            DataRelation dr2 = new DataRelation("AutosBestelling", autosDataSet.Tables["Auto"].Columns["AutoID"],
+               autosDataSet.Tables["Bestelling"].Columns["AutoID"]);
+            autosDataSet.Relations.Add(dr2);
 
             // Haal rij op 
             DataRow drKlant = autosDataSet.Tables["Klant"].Rows[0];
