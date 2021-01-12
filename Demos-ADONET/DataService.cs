@@ -39,7 +39,7 @@ namespace Demos_ADONET
             if (brouwers != null && brouwers.Count > 0) brouwer = brouwers[0];
             return brouwer;
         }
-        private IList<Brouwer> GeefBrouwers(int BrouwerID = 0) //VoorGemeente(string gemeente)
+        private IList<Brouwer> GeefBrouwers(int BrouwerID = 0) 
         {
             IList<Brouwer> brouwers = new List<Brouwer>();
             string sqlQuery = $"select* from Brouwers";
@@ -146,25 +146,25 @@ namespace Demos_ADONET
                 command.Connection.Open();
                 command.ExecuteNonQuery();
             }
-                //USE[BierenDb]
-                //GO
+            //USE[BierenDb]
+            //GO
 
-                //CREATE PROCEDURE[dbo].[sp_UpdateOmzetVoorBrouwers]
-                //@postcode smallint
-                //AS
-                //BEGIN
+            //CREATE PROCEDURE[dbo].[sp_UpdateOmzetVoorBrouwers]
+            //@postcode smallint
+            //AS
+            //BEGIN
 
-                //    UPDATE BROUWERS SET Omzet = Omzet / 2
+            //    UPDATE BROUWERS SET Omzet = Omzet / 2
 
-                //    where Postcode = 1000
-                //END
-                //--EXEC sp_UpdateOmzetVoorBrouwers 1000
-                //--select* from Brouwers where postcode = 1000
+            //    where Postcode = @postcode
+            //END
+            //--EXEC sp_UpdateOmzetVoorBrouwers 1000
+            //--select* from Brouwers where postcode = 1000
 
-                //--BV
-                //INSERT INTO BROUWERS(BrouwerNr, BrNaam, Adres, PostCode, Gemeente, Omzet)
-                //VALUES(9999, 'MijnBrouwer', 'Biervatlaan 99', 1000, 'Brussel', 2400)
-         }
+            //--BV
+            //INSERT INTO BROUWERS(BrouwerNr, BrNaam, Adres, PostCode, Gemeente, Omzet)
+            //VALUES(9999, 'MijnBrouwer', 'Biervatlaan 99', 1000, 'Brussel', 2400)
+        }
         public void UpdateBierenAlcoholPercentage()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
