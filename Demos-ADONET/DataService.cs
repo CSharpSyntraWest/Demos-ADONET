@@ -7,9 +7,12 @@ using System.Text;
 //Oefening ADO.NET Sql Connectie - Vul de code aan: 
 //1. Maak een methode die alle Brouwers
 //   teruggeeft uit de Bierendatabase roep deze aan vanuit Program.cs en schrijf de brouwergegevens naar de console
-//2. Maak een methode die aan de hand van de BrouwerID de gegevens van deze brouwer teruggeeft (zonder stored procedure)
-//3. Maak een methode die een stored procedure aanroept die de omzet van de brouwers uit Brussel halveert
-//4. Maak een methode die het aantal bieren van een bepaalde soort teruggeeft (soortnaam meegeven als input parameter aan stored procedure)
+//2. Maak een methode die aan de hand van de BrouwerID de gegevens van deze brouwer teruggeeft
+//(zonder stored procedure)
+//3. Maak een methode die een stored procedure aanroept die de omzet van de brouwers uit Brussel halveert 
+//(eerst backup maken van BierenDb!!!)
+//4. Maak een methode die het aantal bieren van een bepaalde soort teruggeeft 
+//(soortnaam meegeven als input parameter aan stored procedure)
 
 namespace Demos_ADONET
 {
@@ -67,6 +70,23 @@ namespace Demos_ADONET
             }
             return aantalBrouwers;
         }
+        public int? GeefAantalBierenVoorSoort(string soort)
+        {
+            int? aantalBieren = null;
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand("sp_GeefAantalBierenVoorSoort", connection);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                SqlParameter sqlParameter = new SqlParameter("@soort", System.Data.SqlDbType.VarChar);
+                sqlParameter.Direction = System.Data.ParameterDirection.Input;
+                sqlParameter.Value = soort;
+                sqlParameter.Size = 50;//Varchar(50)
+                cmd.Parameters.Add(sqlParameter);
+                aantalBieren = (int?)cmd.ExecuteScalar();
+            }
+            return aantalBieren;
+        }
         public void UpdateBierenAlcoholPercentage()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -76,6 +96,19 @@ namespace Demos_ADONET
                 command.Connection.Open();
                 command.ExecuteNonQuery();
             }
+            //USE[BierenDb]
+            //    GO
+
+            //    CREATE PROCEDURE[dbo].[sp_UpdateBierAlcoholPerc]
+            //    AS
+            //    BEGIN
+
+            //        UPDATE BIEREN
+
+            //        set Alcohol = Alcohol * 2
+
+            //        where BierNr = 4
+            //    END
         }
 
         public IList<Soort> GeefAlleSoorten()
@@ -93,7 +126,7 @@ namespace Demos_ADONET
                     Soort soort = new Soort()
                     {
                         SoortNr = (int)sqlReader["SoortNr"],
-                        SoortNaam = (sqlReader["Soort"] == DBNull.Value) ? null : sqlReader["Soort"].ToString(),// of sqlReader.GetFloat(4)
+                        SoortNaam = (sqlReader["Soort"] == DBNull.Value) ? null : sqlReader["Soort"].ToString()
                     };
                     soorten.Add(soort);
                 }
