@@ -27,6 +27,53 @@ namespace Demos_ADONET
             //_sqlConnectie = new SqlConnection(_connectionString);
         }
 
+        public void 
+        public IList<Brouwer> GeefAlleBrouwers()
+        {
+            //Geef alle brouwers terug
+            return GeefBrouwers();
+        }
+        public Brouwer GeefBrouwer(int BrouwerNr)
+        {
+            Brouwer brouwer = null;           
+            IList<Brouwer> brouwers = GeefBrouwers(BrouwerNr);
+            if (brouwers != null && brouwers.Count > 0) brouwer = brouwers[0];
+            return brouwer;
+        }
+        private IList<Brouwer> GeefBrouwers(int BrouwerID = 0) //VoorGemeente(string gemeente)
+        {
+            IList<Brouwer> brouwers = new List<Brouwer>();
+            string sqlQuery = $"select* from Brouwers";
+            if (BrouwerID != 0)
+            {
+                //Geef enkel brouwers voor BrouwerID terug
+                sqlQuery += " where BrouwerNr=" +BrouwerID;
+            }
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                // where gemeente = '{gemeente}'
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.CommandType = System.Data.CommandType.Text;
+                command.Connection.Open();
+                SqlDataReader sqlReader = command.ExecuteReader();
+                while(sqlReader.Read())
+                {
+                    Brouwer brouwer = new Brouwer()
+                    {
+                        BrouwerNr = (int)sqlReader["BrouwerNr"],
+                        BrNaam = (sqlReader["BrNaam"] == DBNull.Value) ? null : sqlReader["BrNaam"].ToString(),
+                        Adres = (sqlReader["Adres"] == DBNull.Value) ? null : sqlReader["Adres"].ToString(),
+                        Gemeente= (sqlReader["Gemeente"] == DBNull.Value) ? null : sqlReader["Gemeente"].ToString(),
+                        PostCode = (sqlReader["PostCode"] == DBNull.Value) ? null : (short?)sqlReader["PostCode"],
+                        Omzet = (sqlReader["Omzet"] == DBNull.Value) ? null : (int?)sqlReader["Omzet"]
+                    };
+                    brouwers.Add(brouwer);
+                }
+                sqlReader.Close();
+            }
+
+            return brouwers;
+        }
         public IList<Bier> GeefAlleBieren()
         {
             IList<Bier> bieren = new List<Bier>();
@@ -87,6 +134,38 @@ namespace Demos_ADONET
             }
             return aantalBieren;
         }
+        public void HalveerOmzetVoorBrouwers(short postcode)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand("sp_UpdateOmzetVoorBrouwers", connection);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                SqlParameter sqlParameter = new SqlParameter("@postcode", System.Data.SqlDbType.SmallInt);
+                sqlParameter.Direction = System.Data.ParameterDirection.Input;
+                sqlParameter.Value = postcode;//bv postcode 1000 = Brussel
+                command.Parameters.Add(sqlParameter);
+                command.Connection.Open();
+                command.ExecuteNonQuery();
+            }
+                //USE[BierenDb]
+                //GO
+
+                //CREATE PROCEDURE[dbo].[sp_UpdateOmzetVoorBrouwers]
+                //@postcode smallint
+                //AS
+                //BEGIN
+
+                //    UPDATE BROUWERS SET Omzet = Omzet / 2
+
+                //    where Postcode = 1000
+                //END
+                //--EXEC sp_UpdateOmzetVoorBrouwers 1000
+                //--select* from Brouwers where postcode = 1000
+
+                //--BV
+                //INSERT INTO BROUWERS(BrouwerNr, BrNaam, Adres, PostCode, Gemeente, Omzet)
+                //VALUES(9999, 'MijnBrouwer', 'Biervatlaan 99', 1000, 'Brussel', 2400)
+         }
         public void UpdateBierenAlcoholPercentage()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
