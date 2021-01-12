@@ -27,7 +27,6 @@ namespace Demos_ADONET
             //_sqlConnectie = new SqlConnection(_connectionString);
         }
 
-        public void 
         public IList<Brouwer> GeefAlleBrouwers()
         {
             //Geef alle brouwers terug

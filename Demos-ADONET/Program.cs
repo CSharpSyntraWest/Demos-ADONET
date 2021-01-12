@@ -26,6 +26,8 @@ namespace Demos_ADONET
                 Console.WriteLine($"{brouwer.BrouwerNr} : {brouwer.BrNaam} - {brouwer.Adres}, {brouwer.PostCode} {brouwer.Gemeente} Omzet: {brouwer.Omzet}");
 
             }
+
+            bierenDataService.HalveerOmzetVoorBrouwers(1000);
             //bierenDataService.OpenEnSluitConnectie();
 
             //    bierenDataService.UpdateBierenAlcoholPercentage();
