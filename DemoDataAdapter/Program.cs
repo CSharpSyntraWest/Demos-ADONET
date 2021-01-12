@@ -15,10 +15,10 @@ namespace DemoDataAdapter
             string sConnectionString = "Initial Catalog= BierenDb;Data Source=localhost;Integrated Security=SSPI;";
             using (SqlConnection conn = new SqlConnection(sConnectionString))
             {
-                SqlDataAdapter sqlAdp = new SqlDataAdapter("Select * from Bieren", conn);
+                SqlDataAdapter sqlAdp = new SqlDataAdapter("Select * from Soorten", conn);
                 DataSet sqlDS = new DataSet(" bierenDataSet");
-                sqlAdp.Fill(sqlDS, "bierentabel");
-                DataTableReader dtReader = sqlDS.Tables["bierentabel"].CreateDataReader();
+                sqlAdp.Fill(sqlDS, "soortentabel");
+                DataTableReader dtReader = sqlDS.Tables["soortentabel"].CreateDataReader();
 
                 while (dtReader.Read())
                 {

@@ -18,10 +18,6 @@ namespace Scaffold_BierenDb
         public virtual DbSet<Bieren> Bieren { get; set; }
         public virtual DbSet<Brouwers> Brouwers { get; set; }
         public virtual DbSet<Soorten> Soorten { get; set; }
-        public virtual DbSet<VwBierenMetBrouwers> VwBierenMetBrouwers { get; set; }
-        public virtual DbSet<VwBierenMetSoorten> VwBierenMetSoorten { get; set; }
-        public virtual DbSet<VwBrouwersBeperkt> VwBrouwersBeperkt { get; set; }
-        public virtual DbSet<VwToptien> VwToptien { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -85,70 +81,6 @@ namespace Scaffold_BierenDb
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<VwBierenMetBrouwers>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("vw_BierenMetBrouwers");
-
-                entity.Property(e => e.BrNaam)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Naam)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<VwBierenMetSoorten>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("vw_BierenMetSoorten");
-
-                entity.Property(e => e.Naam)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Soort)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<VwBrouwersBeperkt>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Vw_BrouwersBeperkt");
-
-                entity.Property(e => e.Adres)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BrNaam)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Gemeente)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<VwToptien>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("vw_toptien");
-
-                entity.Property(e => e.Brnaam)
-                    .HasColumnName("brnaam")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Brouwernr).HasColumnName("brouwernr");
-
-                entity.Property(e => e.Omzet).HasColumnName("omzet");
-            });
 
             OnModelCreatingPartial(modelBuilder);
         }
