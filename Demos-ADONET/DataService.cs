@@ -18,10 +18,10 @@ namespace Demos_ADONET
         private readonly string _connectionString;
         public BierenDataService()
         {
-           // _connectionString = "Data Source=.;Initial Catalog=BierenDb;Integrated Security=True";
+            _connectionString = "Data Source=.;Initial Catalog=BierenDb;Integrated Security=True";
             //Haal connectiestring op uit config bestand bv
-            _connectionString = ConfigurationManager.ConnectionStrings["BierenDbCon"].ConnectionString;
-            _sqlConnectie = new SqlConnection(_connectionString);
+            //_connectionString = ConfigurationManager.ConnectionStrings["BierenDbCon"].ConnectionString;
+            //_sqlConnectie = new SqlConnection(_connectionString);
         }
 
         public IList<Bier> GeefAlleBieren()
@@ -78,5 +78,28 @@ namespace Demos_ADONET
             }
         }
 
+        public IList<Soort> GeefAlleSoorten()
+        {
+            IList<Soort> soorten = new List<Soort>();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand("Select SoortNr,Soort from Soorten", connection);
+                command.CommandType = System.Data.CommandType.Text;
+                command.Connection.Open();
+                SqlDataReader sqlReader = command.ExecuteReader();
+                while (sqlReader.Read())// rij per rij aflopen van resultaat, waarde uit kolom opvragen via sqlReader("kolomnaam")
+                {
+                    //sqlReader.GetValues() geeft alle waarden van één rij terug in een array
+                    Soort soort = new Soort()
+                    {
+                        SoortNr = (int)sqlReader["SoortNr"],
+                        SoortNaam = (sqlReader["Soort"] == DBNull.Value) ? null : sqlReader["Soort"].ToString(),// of sqlReader.GetFloat(4)
+                    };
+                    soorten.Add(soort);
+                }
+                sqlReader.Close();//wordt automatisch afgesloten binnen using(...) wanneer connectie wordt afgesloten
+            }
+            return soorten;
+        }
     }
 }
