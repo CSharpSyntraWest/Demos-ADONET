@@ -22,18 +22,46 @@ namespace Scaffold_BierenDb
             // VoegBierToe();
             /*Wijzig de naam van TESTBIER in TESTALCOHOLVRIJ Bier en bewaar de wijziging in de database. 
              * Zoek eerst TESTBIER op in de database*/
-            WijzigBier();
+            //WijzigBier();
+
+            VerwijderBier("TESTALCOHOLVRIJ");
 
             PrintAlleBrouwersMetBieren();
 
             Console.ReadKey();
         }
+
+        private static Bieren ZoekBierOpNaam(string bierNaam)
+        {
+            using (BierenDbContext bierenDb = new BierenDbContext())
+            {
+                Bieren bier = bierenDb.Bieren.Where(b => b.Naam.ToUpper() == bierNaam).FirstOrDefault();         
+                return bier;
+           }
+        }
+        private static void VerwijderBier(string naam)
+        {
+            using (BierenDbContext bierenDb = new BierenDbContext())
+            {
+                Bieren bier = ZoekBierOpNaam(naam);
+                if (bier == null)
+                {
+                    Console.WriteLine($"Bier met naam '{naam}' niet gevonden");
+                    return;
+                }
+                //Gevonden bier verwijderen
+                bierenDb.Bieren.Remove(bier);
+                bierenDb.SaveChanges();
+                Console.WriteLine($"Bier met naam '{naam}' verwijderd.");
+            }
+        }
+
         private static void WijzigBier()
         {
             using (BierenDbContext bierenDb = new BierenDbContext())
             {
                 //Zoek bier met naam "TESTBIER"
-                Bieren bier = bierenDb.Bieren.Where(b => b.Naam.ToUpper() == "TESTBIER").FirstOrDefault();
+                Bieren bier = ZoekBierOpNaam("TESTBIER");
                 if (bier == null)
                 {
                     Console.WriteLine("Bier met naam 'TESTBIER' niet gevonden");
