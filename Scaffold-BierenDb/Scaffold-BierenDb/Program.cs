@@ -9,15 +9,45 @@ namespace Scaffold_BierenDb
     {
         static void Main(string[] args)
         {
+            //PrintAlleBieren();
+
+            //PrintAlleBrouwersMetBieren();
+
+            //Oefening: Geef alle soorten en voor elke soort alle bieren
+            /*
+             * Oefening BierenDb. Voeg een nieuw bier toe met naam ”TESTBIER” met soort “Alcoholvrij” 
+             * (zoek eerst het SoortNr op in Soorten) aan de Brouwer “Zwingel” (zoek eerst deze Brouwer op via BrNaam). 
+             * Bewaar de gegevens in de BierenDb
+            */
+            // VoegBierToe();
+            /*Wijzig de naam van TESTBIER in TESTALCOHOLVRIJ Bier en bewaar de wijziging in de database. 
+             * Zoek eerst TESTBIER op in de database*/
+            WijzigBier();
+
+            PrintAlleBrouwersMetBieren();
+
+            Console.ReadKey();
+        }
+        private static void WijzigBier()
+        {
             using (BierenDbContext bierenDb = new BierenDbContext())
             {
-                List<Bieren> bieren = bierenDb.Bieren.ToList();
-                foreach (Bieren bier in bieren)
+                //Zoek bier met naam "TESTBIER"
+                Bieren bier = bierenDb.Bieren.Where(b => b.Naam.ToUpper() == "TESTBIER").FirstOrDefault();
+                if (bier == null)
                 {
-                    Console.WriteLine($"{bier.BierNr} : {bier.Naam}");
+                    Console.WriteLine("Bier met naam 'TESTBIER' niet gevonden");
+                    return;
                 }
+                bier.Naam = "TESTALCOHOLVRIJ";
+                bierenDb.Bieren.Update(bier);
+                bierenDb.SaveChanges();
             }
+        }
 
+
+        private static void PrintAlleBrouwersMetBieren()
+        {
             using (BierenDbContext bierenDb = new BierenDbContext())
             {
                 List<Brouwers> brouwers = bierenDb.Brouwers.Include(b => b.Bieren).ToList();
@@ -30,14 +60,23 @@ namespace Scaffold_BierenDb
                     }
                 }
             }
+        }
 
-            //Oefening: Geef alle soorten en voor elke soort alle bieren
-            /*
-             * Oefening BierenDb. Voeg een nieuw bier toe met naam ”TESTBIER” met soort “Alcoholvrij” 
-             * (zoek eerst het SoortNr op in Soorten) aan de Brouwer “Zwingel” (zoek eerst deze Brouwer op via BrNaam). 
-             * Bewaar de gegevens in de BierenDb
-            */
+        private static void PrintAlleBieren()
+        {
+            using (BierenDbContext bierenDb = new BierenDbContext())
+            {
+                List<Bieren> bieren = bierenDb.Bieren.ToList();
+                foreach (Bieren bier in bieren)
+                {
+                    Console.WriteLine($"{bier.BierNr} : {bier.Naam}");
+                }
+            }
+        }
 
+
+        private static void VoegBierToe()
+        {
             //zoek eerst het SoortNr op in Soorten met naam “Alcoholvrij” 
             using (BierenDbContext db = new BierenDbContext())
             {
@@ -65,10 +104,8 @@ namespace Scaffold_BierenDb
                     //Nieuw bier bewaren in database
                     db.SaveChanges();
                 }
+            }
 
-                //}
-
-                Console.ReadKey();
         }
-}
+    }
 }
